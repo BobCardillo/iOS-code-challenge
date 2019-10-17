@@ -44,6 +44,8 @@
         params[@"categories"] = [self.categoryFilter componentsJoinedByString:@","];
     }
     
+    params[@"sort_by"] = @"distance";
+    
     return params;
 }
 
