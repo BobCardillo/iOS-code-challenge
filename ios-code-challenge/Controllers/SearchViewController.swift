@@ -9,39 +9,7 @@
 import UIKit
 import CoreLocation
 
-class MasterViewController: UITableViewController, CLLocationManagerDelegate, UISearchResultsUpdating {
-    
-    var detailViewController: DetailViewController?
-    
-    lazy private var dataSource: NXTDataSource? = {
-        guard let dataSource = NXTDataSource(objects: nil) else { return nil }
-        dataSource.tableViewDidReceiveData = { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.tableView.reloadData()
-        }
-        
-        dataSource.tableViewDidSelectCell = { [weak self] sender in
-            guard let strongSelf = self else { return }
-            strongSelf.performSegue(withIdentifier: "showDetail", sender: sender)
-        }
-        
-        dataSource.tableViewDidScroll = { [weak self] in
-            guard let strongSelf = self, let tableView = strongSelf.tableView, dataSource.objects.count > 0 else {
-                return
-            }
-            
-            let shouldScroll = (tableView.contentOffset.y + tableView.frame.height) > (tableView.contentSize.height - 250)
-            
-            if !strongSelf.loadingPage && shouldScroll {
-                strongSelf.loadingPage = true
-                //This will keep trying to page when we're on the last page, which is not ideal. I would account for that if I was doing an app that is intended to be released
-                strongSelf.loadNextPage()
-            }
-        }
-        
-        return dataSource
-    }()
-    
+class SearchViewController: BaseTableViewController, CLLocationManagerDelegate, UISearchResultsUpdating {
     lazy private var locationManager: CLLocationManager = {
         let locationManager = CLLocationManager()
         
@@ -67,9 +35,6 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate, UI
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.dataSource = dataSource
-        tableView.delegate = dataSource
-        
         navigationItem.searchController = searchController
         
         if CLLocationManager.authorizationStatus() == .notDetermined {
@@ -78,11 +43,6 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate, UI
         else {
             loadData()
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        self.clearsSelectionOnViewWillAppear = self.splitViewController?.isCollapsed ?? false
-        super.viewDidAppear(animated)
     }
     
     // MARK: - Search
@@ -159,18 +119,11 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate, UI
         })
     }
     
-    // MARK: - Navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showDetail" {
-            guard let indexPath = tableView.indexPathForSelectedRow,
-                let controller = (segue.destination as? UINavigationController)?.viewControllers.first as? DetailViewController,
-                let object = dataSource?.objects[indexPath.row] as? YLPBusiness else {
-                return
-            }
-            controller.setDetailItem(newDetailItem: object)
-            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem
-            controller.navigationItem.leftItemsSupplementBackButton = true
+    override func onScrollToBottom() {
+        if !loadingPage {
+            loadingPage = true
+            //This will keep trying to page when we're on the last page, which is not ideal. I would account for that if I was doing an app that is intended to be released
+            loadNextPage()
         }
     }
-
 }

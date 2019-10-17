@@ -57,6 +57,13 @@ class DetailViewController: UIViewController {
         guard detailItem != newDetailItem else { return }
         detailItem = newDetailItem
         configureView()
+        
+        FavoriteService.shared.runWhenInitialized {
+            if FavoriteService.shared.isFavorite(newDetailItem) {
+                self._favorite = true
+                self.updateFavoriteBarButtonState()
+            }
+        }
     }
     
     private func updateFavoriteBarButtonState() {
@@ -64,7 +71,18 @@ class DetailViewController: UIViewController {
     }
     
     @objc private func onFavoriteBarButtonSelected(_ sender: Any) {
-        _favorite.toggle()
-        updateFavoriteBarButtonState()
+        if let detailItem = detailItem {
+            FavoriteService.shared.runWhenInitialized {
+                if self.isFavorite {
+                    FavoriteService.shared.remove(detailItem)
+                }
+                else {
+                    FavoriteService.shared.add(detailItem)
+                }
+                
+                self._favorite.toggle()
+                self.updateFavoriteBarButtonState()
+            }
+        }
     }
 }
