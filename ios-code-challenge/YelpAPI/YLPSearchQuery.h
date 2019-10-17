@@ -36,6 +36,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) double radiusFilter;
 
+/**
+ * Optional. The page to get. Is multiplied by the page size to get the offset.
+ *  If not specified, just gets the first page
+ */
+@property (nonatomic, assign) int page;
+
 @end
 
 NS_ASSUME_NONNULL_END

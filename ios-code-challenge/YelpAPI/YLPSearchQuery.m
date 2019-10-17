@@ -8,6 +8,8 @@
 
 #import "YLPSearchQuery.h"
 
+const int SEARCH_PAGE_SIZE = 20; //The default page size for the Yelp API
+
 @interface YLPSearchQuery()
 
 @property (nonatomic, copy) NSString *location;
@@ -24,6 +26,8 @@
         _location = location;
     }
     
+    _page = 0;
+    
     return self;
 }
 - (instancetype)initWithLatitude:(NSNumber *)latitude andLongitude:(NSNumber *)longitude
@@ -32,6 +36,8 @@
         _latitude = latitude;
         _longitude = longitude;
     }
+    
+    _page = 0;
     
     return self;
 }
@@ -61,6 +67,8 @@
     }
     
     params[@"sort_by"] = @"distance";
+    
+    params[@"offset"] = [NSNumber numberWithInt:self.page * SEARCH_PAGE_SIZE];
     
     return params;
 }
