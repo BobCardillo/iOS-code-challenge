@@ -9,7 +9,7 @@
 import UIKit
 import CoreLocation
 
-class MasterViewController: UITableViewController, CLLocationManagerDelegate {
+class MasterViewController: UITableViewController, CLLocationManagerDelegate, UISearchResultsUpdating {
     
     var detailViewController: DetailViewController?
     
@@ -34,12 +34,25 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
        
         return locationManager
     }()
+    
+    lazy private var searchController: UISearchController = {
+        let searchController = UISearchController()
+        
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.placeholder = "Search businesses"
+        searchController.obscuresBackgroundDuringPresentation = false
+        
+        return searchController
+    }()
+    var currentSearchId: String? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.dataSource = dataSource
         tableView.delegate = dataSource
+        
+        navigationItem.searchController = searchController
         
         if CLLocationManager.authorizationStatus() == .notDetermined {
             locationManager.requestWhenInUseAuthorization()
@@ -54,26 +67,46 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
         super.viewDidAppear(animated)
     }
     
+    // MARK: - Search
+    func updateSearchResults(for searchController: UISearchController) {
+        //Ideally, we would want a loading overlay (especially with our search delay), but for now, I'ld like to avoid making this overly complex (we'll add it in version 2.0)
+        let thisSearchId = UUID().uuidString
+        currentSearchId = thisSearchId
+        //Avoid hammering the API and our battery and our data plan�
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            //If the searchId is different from what we put in the term variable, the user is actively typing. We can let the next async task handle the search.
+            if self.currentSearchId == thisSearchId {
+                self.loadData(search: searchController.searchBar.text)
+            }
+        }
+    }
+    
     // MARK: - Location Services
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         loadData()
     }
     
     // MARK: - Data Update
-    func loadData() {
-        let defaultQuery: YLPSearchQuery = YLPSearchQuery(location: "5550 West Executive Dr. Tampa, FL 33609")
+    func loadData(search: String? = nil) {
+        var query: YLPSearchQuery = YLPSearchQuery(location: "5550 West Executive Dr. Tampa, FL 33609")
         
         if CLLocationManager.authorizationStatus() == .authorizedAlways || CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             if let location = locationManager.location?.coordinate {
-                let query = YLPSearchQuery(latitude: NSNumber(value: location.latitude), andLongitude: NSNumber(value: location.longitude))
-                runYelpQuery(query)
+                query = YLPSearchQuery(latitude: NSNumber(value: location.latitude), andLongitude: NSNumber(value: location.longitude))
             }
-            else {
-                runYelpQuery(defaultQuery)
+            
+            if let search = search, search != "" {
+                query.term = search
             }
+            
+            runYelpQuery(query)
         }
         else {
-            runYelpQuery(defaultQuery)
+            if let search = search, search != "" {
+                query.term = search
+            }
+            
+            runYelpQuery(query)
         }
     }
     
