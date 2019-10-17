@@ -45,6 +45,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, copy) NSNumber *distance;
 
 /**
+ *  Relative price of this business.
+ */
+@property (nonatomic, readonly, copy) NSString *price;
+
+/**
  *  URL for the thumbnail for this business.
  */
 @property (nonatomic, readonly, copy) NSString *imageUrl;
