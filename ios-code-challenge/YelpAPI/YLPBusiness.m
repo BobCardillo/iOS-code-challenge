@@ -23,6 +23,7 @@ const double METERS_TO_MILES_MULTIPLIER = 0.000621371192;
         _distance = [NSNumber numberWithDouble:[attributes[@"distance"] doubleValue] * METERS_TO_MILES_MULTIPLIER];
         _price = attributes[@"price"];
         _imageUrl = attributes[@"image_url"];
+        _coordinates = attributes[@"coordinates"];
     }
     
     return self;

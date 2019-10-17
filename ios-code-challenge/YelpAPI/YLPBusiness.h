@@ -54,6 +54,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, copy) NSString *imageUrl;
 
+/**
+ *  The location for this business.
+ */
+@property (nonatomic, readonly, copy) NSDictionary<NSString *, NSNumber *> *coordinates;
+
 @end
 
 NS_ASSUME_NONNULL_END

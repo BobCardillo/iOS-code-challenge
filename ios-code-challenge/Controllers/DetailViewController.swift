@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MapKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var detailNameLabel: UILabel!
     @IBOutlet weak var detailCategoriesLabel: UILabel!
@@ -17,6 +18,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var detailPriceLabel: UILabel!
     @IBOutlet weak var detailThumbnailImage: UIImageView!
     lazy private var favoriteBarButtonItem: UIBarButtonItem = UIBarButtonItem(image: UIImage(named: "Star-Outline"), style: .plain, target: self, action: #selector(onFavoriteBarButtonSelected(_:)))
+    @IBOutlet weak var map: MKMapView!
 
     @objc var detailItem: YLPBusiness?
     
@@ -32,6 +34,9 @@ class DetailViewController: UIViewController {
         
         configureView()
         navigationItem.rightBarButtonItems = [favoriteBarButtonItem]
+        
+        map.delegate = self
+        map.showsUserLocation = true
     }
     
     private func configureView() {
@@ -51,6 +56,12 @@ class DetailViewController: UIViewController {
         //Holding off on thumbnail like on task 1
         //Pretty much the same process for getting an image and adding to UIImageView applies here, but in Swift rather than Obj-C
         
+        
+        
+        //This could probably be a little nicer.
+        let region = MKCoordinateRegion(center: detailItem.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.15, longitudeDelta: 0.15))
+        map.setRegion(region, animated: true)
+        map.addAnnotation(detailItem)
     }
     
     func setDetailItem(newDetailItem: YLPBusiness) {
@@ -84,5 +95,23 @@ class DetailViewController: UIViewController {
                 self.updateFavoriteBarButtonState()
             }
         }
+    }
+    
+    //MARK: - Map View
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let annotation = annotation as? YLPBusiness else { return nil }
+        
+        let reuseIdentifier = "annotationView"
+        var view = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier)
+        
+        if view == nil {
+            view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        }
+        //I mainly added this method so I can set the display priority
+        view?.displayPriority = .required
+        
+        view?.annotation = annotation
+        view?.canShowCallout = true
+        return view
     }
 }

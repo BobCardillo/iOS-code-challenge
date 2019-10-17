@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="8Rv-u5-XYV">
-                                <rect key="frame" x="331.5" y="401" width="105.5" height="272.5"/>
+                                <rect key="frame" x="331.5" y="114" width="105.5" height="272.5"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nosign" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="WZc-HX-ktp">
                                         <rect key="frame" x="42.5" y="0.5" width="20" height="99.5"/>
@@ -58,11 +58,18 @@
                                     </label>
                                 </subviews>
                             </stackView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="IzZ-h3-M7q">
+                                <rect key="frame" x="0.0" y="394.5" width="768" height="629.5"/>
+                            </mapView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="IzZ-h3-M7q" firstAttribute="top" secondItem="8Rv-u5-XYV" secondAttribute="bottom" constant="8" id="2vu-xT-UUi"/>
+                            <constraint firstItem="IzZ-h3-M7q" firstAttribute="width" secondItem="VUw-jc-0yf" secondAttribute="width" id="7mw-bV-JVx"/>
+                            <constraint firstItem="8Rv-u5-XYV" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" constant="64" id="Btz-uv-j1f"/>
                             <constraint firstItem="8Rv-u5-XYV" firstAttribute="centerX" secondItem="VUw-jc-0yf" secondAttribute="centerX" id="VCC-Gq-rty"/>
-                            <constraint firstItem="8Rv-u5-XYV" firstAttribute="centerY" secondItem="VUw-jc-0yf" secondAttribute="centerY" id="kiB-Dh-seL"/>
+                            <constraint firstItem="IzZ-h3-M7q" firstAttribute="centerX" secondItem="VUw-jc-0yf" secondAttribute="centerX" id="ir9-M9-t5b"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="bottom" secondItem="IzZ-h3-M7q" secondAttribute="bottom" id="sPL-Sb-N7o"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VUw-jc-0yf"/>
                     </view>
@@ -75,11 +82,12 @@
                         <outlet property="detailRatingLabel" destination="Yo0-IR-9BF" id="I5U-FA-JJW"/>
                         <outlet property="detailReviewCountLabel" destination="4KA-Qt-ccZ" id="mlP-Le-cPp"/>
                         <outlet property="detailThumbnailImage" destination="WZc-HX-ktp" id="MDX-Wa-GXL"/>
+                        <outlet property="map" destination="IzZ-h3-M7q" id="N5F-Sy-WVf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1511" y="-802"/>
+            <point key="canvasLocation" x="1510.9375" y="-802.1484375"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="Nki-YV-4Qg">
