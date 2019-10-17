@@ -11,6 +11,8 @@
 @interface YLPSearchQuery()
 
 @property (nonatomic, copy) NSString *location;
+@property (nonatomic, copy) NSNumber *latitude;
+@property (nonatomic, copy) NSNumber *longitude;
 
 @end
 
@@ -24,12 +26,26 @@
     
     return self;
 }
+- (instancetype)initWithLatitude:(NSNumber *)latitude andLongitude:(NSNumber *)longitude
+{
+    if(self = [super init]) {
+        _latitude = latitude;
+        _longitude = longitude;
+    }
+    
+    return self;
+}
 - (NSDictionary *)parameters
 {
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     
     if(self.location) {
         params[@"location"] = self.location;
+    }
+
+    if(self.latitude && self.longitude) {
+        params[@"latitude"] = self.latitude;
+        params[@"longitude"] = self.longitude;
     }
     
     if(self.term) {

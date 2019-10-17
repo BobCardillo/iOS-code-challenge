@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface YLPSearchQuery : NSObject
 
 - (instancetype)initWithLocation:(NSString *)location;
+- (instancetype)initWithLatitude:(NSNumber *)latitude andLongitude:(NSNumber *)longitude;
 - (NSDictionary *)parameters;
 
 /**
